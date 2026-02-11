@@ -1,0 +1,42 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*' # 当推送以 v 开头的标签时触发，例如 v1.0.0
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Rust Cache
+        uses: Swatinem/rust-cache@v2
+
+      - name: Build Release
+        run: cargo build --release
+
+      - name: Prepare Artifact
+        shell: pwsh
+        run: |
+          mkdir staging
+          cp target/release/fontloader-egui.exe staging/NewFontLoader.exe
+          # 如果有其他文件（如 README/License）也可以加进来
+          cp README.md staging/
+
+      - name: Create Release and Upload Asset
+        uses: softprops/action-gh-release@v2
+        with:
+          files: staging/NewFontLoader.exe
+          body_path: README.md
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
