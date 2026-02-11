@@ -5,6 +5,11 @@ on:
     tags:
       - 'v*' # 当推送以 v 开头的标签时触发，例如 v1.0.0
   workflow_dispatch:
+    inputs:
+      tag_name:
+        description: 'Release Tag (optional for manual trigger)'
+        required: false
+        default: ''
 
 jobs:
   build:
@@ -36,7 +41,9 @@ jobs:
       - name: Create Release and Upload Asset
         uses: softprops/action-gh-release@v2
         with:
+          tag_name: ${{ github.event.inputs.tag_name || github.ref_name }}
           files: staging/NewFontLoader.exe
           body_path: README.md
+          overwrite_files: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
