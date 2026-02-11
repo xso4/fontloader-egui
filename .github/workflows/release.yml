@@ -34,16 +34,16 @@ jobs:
         shell: pwsh
         run: |
           mkdir staging
-          cp target/release/fontloader-egui.exe staging/NewFontLoader.exe
-          # 如果有其他文件（如 README/License）也可以加进来
+          cp target/release/fontloader-egui.exe staging/
           cp README.md staging/
+          Compress-Archive -Path staging/* -DestinationPath fontloader-egui-windows.zip
 
       - name: Create Release and Upload Asset
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ github.event.inputs.tag_name || github.ref_name }}
-          files: staging/NewFontLoader.exe
-          body_path: README.md
+          files: fontloader-egui-windows.zip
+          generate_release_notes: true
           overwrite_files: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
