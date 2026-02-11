@@ -26,8 +26,8 @@
 
 ```bash
 # 克隆仓库
-git clone https://github.com/你的用户名/newfontloader.git
-cd newfontloader
+git clone https://github.com/你的用户名/fontloader-egui.git
+cd fontloader-egui
 
 # 编译并运行
 cargo run --release
